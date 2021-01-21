@@ -47,6 +47,15 @@ public enum Op{
 	/** λx.λy.λz.xz(yz) aka ((xz)(yz)). Is the S lambda of https://en.wikipedia.org/wiki/SKI_combinator_calculus */
 	s(3),
 	
+	/** λunaryNumber.λparamList.λnextParam.(...
+	if (isLeaf unaryNumber)
+	then (secondLastInLinkedlist paramList (pair nextParam paramList))
+	else (curry (r unaryNumber) (pair nextParam paramsList))
+	...)
+	There is a way to write that in lambdas, like in OcfnUtil.equals() it uses an IF(condition,ifTrue,ifFalse) lambda etc,
+	though occamsfuncer is still using java to call some of the lambdas on eachother to make lambdas,
+	cuz the syntax is incomplete.
+	*/
 	curry(3), //will have to derive secondLast func
 	
 	/** λret.λparam.λfunc.(λret.λparam.λfunc.(λret.λparam.λfunc.(...))) is halted if (func param)->ret,
