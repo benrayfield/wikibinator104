@@ -33,7 +33,7 @@ public enum Op{
 	*/
 	l(1),
 	
-	/** (r x) is left child of x in the binary forest of call pairs.
+	/** (r x) is right child of x in the binary forest of call pairs.
 	Not the same as lispCdr since pair is the church-pair lambda.
 	isLeaf, l, and r make this a "pattern calculus function".
 	*/
