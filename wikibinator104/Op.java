@@ -9,27 +9,52 @@ public enum Op{
 	*/
 	
 	
+	/** if strict this is (S I I (S I I)), else is loose and (wiki x) == ret in (ax ret x wiki) */ 
 	wiki(1),
 	
+	/** (isLeaf x) is t or f depending if x is the leaf which all paths in the binary forest of call pairs lead to
+	aka the wikibinator104 universal function itself.
+	isLeaf, l, and r make this a "pattern calculus function".
+	*/
 	isLeaf(1),
 	
+	/** (l x) is left child of x in the binary forest of call pairs.
+	Not the same as lispCar since pair is the church-pair lambda.
+	isLeaf, l, and r make this a "pattern calculus function".
+	*/
 	l(1),
 	
+	/** (r x) is left child of x in the binary forest of call pairs.
+	Not the same as lispCdr since pair is the church-pair lambda.
+	isLeaf, l, and r make this a "pattern calculus function".
+	*/
 	r(1),
 	
+	/** λy.λz.y aka true. (pair b c true) is b. Is the K lambda of https://en.wikipedia.org/wiki/SKI_combinator_calculus */
 	t(2),
 	
+	/** λy.λz.z aka false aka f. (fi λ) is identityFunc aka λz.z. (pair b c false) is c. */
 	fi(2),
 	
+	/** λx.λy.λz.zxy. Is the church-pair lambda and lispCons. */
 	pair(3),
 	
-	typeval(3), //same as pair except with the semantic like (typeval "image/jpeg" ...bytesOfJpg...)
+	/** λx.λy.λz.zxy, same as pair except with the semantic like (typeval "image/jpeg" ...bytesOfJpg...).
+	Other funcs can see the difference between typeval and pair using isLeaf, l, r, and a derived equals function.
+	*/
+	typeval(3),
 	
+	/** λx.λy.λz.xz(yz) aka ((xz)(yz)). Is the S lambda of https://en.wikipedia.org/wiki/SKI_combinator_calculus */
 	s(3),
 	
 	curry(3), //will have to derive secondLast func
 	
-	/** Theres a !isDirty and isDirty form of this. Theres nothing dirty about it, other than possibly its params.
+	/** λret.λparam.λfunc.(λret.λparam.λfunc.(λret.λparam.λfunc.(...))) is halted if (func param)->ret,
+	else evals to (S I I (S I I)) aka an infinite loop. 1 more param and it does...
+	λret.λparam.λfunc.λignore.(S I I (S I I)) aka an infinite loop, to complete the 7 params of the universal func,
+	but we dont normally call it all the way to λignore, just use the first 3.
+	<br><br> 
+	Theres a !isDirty and isDirty form of this. Theres nothing dirty about it, other than possibly its params.
 	(ax ret param func) will eventually halt (and cache that) if (func param)->ret (use derived equals func).
 	(ax ret param func ignore) does infloop, which completes the 7 params of the universal func.
 	<br><br>
