@@ -1,5 +1,5 @@
 /** Ben F Rayfield offers this software opensource MIT license */
-package wikibinator104;
+package wikibinator104.spec;
 import java.util.function.UnaryOperator;
 
 /** binary forest node, defined ONLY by its forest shape, with no data in each node
@@ -18,6 +18,8 @@ As of 2021-1-21 github.com/benrayfield/occamsfuncer is version 3 but doesnt say 
 and it doesnt have that infloop in curry behavior cuz its an axiom related thing thats hard to prove things about. 
 */
 public interface λ extends UnaryOperator<λ>{
+	
+	//"wikibinatorDovetailForDebugstepoverAndDebugstepintoCuzThoseAreManyPathsToTheSameFuncparamreturnAndNeedDovetailingSo(L x (R x))EqualsXForXIs(axiomOp ... stepstuff)"
 	
 	//TODO copy designs from "wikibinator102Designing2021-1-21+"
 	//	wikibinator104_usesTheDesignsIn(wikibinator102Designing2021-1-21+)WhichIsBadlyNamed
@@ -64,11 +66,15 @@ public interface λ extends UnaryOperator<λ>{
 		return e(r);
 	}
 	
-	public Compiled compiled();
+	/** cache of 8 of (isLeaf this) .. (isLeaf this.l.l.l.l.l.l.l) */
+	public byte isLeafsByte();
 	
-	/** c.prev()==compiled() must be true so can turn on and off various optimizations
-	per λ or group of λs sharing a Compiled, to test if it does the exact same thing either way.
-	*/
-	public void setCompiled(Compiled c);
+	public default λ clean(){
+		throw new RuntimeException("TODO returns a forkEdit of this where first param after leaf is leaf, unless it already is. TODO optimize this in Simpleλ by each keeping a ptr to the opposite clean/dirty.");
+	}
+	
+	public default λ dirty(){
+		throw new RuntimeException("TODO returns a forkEdit of this where first param after leaf is (leaf leaf), unless it already is something other than leaf. TODO optimize this in Simpleλ by each keeping a ptr to the opposite clean/dirty.");
+	}
 
 }

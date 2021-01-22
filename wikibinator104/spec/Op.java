@@ -1,6 +1,29 @@
-package wikibinator104;
+/** Ben F Rayfield offers this software opensource MIT license */
+package wikibinator104.spec;
 
 public enum Op{
+	
+	//First param chooses isClean vs !isClean. In choosing opcodes, leaf is 0, and anything else is 1.
+	//isClean = !isDirty.
+	//Wiki is the first opcode, so dirtyWiki = (λ λ λ λ λ λ λ),
+	//and (dirtyWiki x) = (λ λ λ λ λ λ λ x) which has 7 params so must eval,
+	//such as (λ λ λ λ λ λ λ "hello")->"world" might be in the dirtyWiki.
+	//A cleanWiki is (λ (λ λ) λ λ λ λ λ), but cleanWiki is practically unuseable
+	//cuz clean means deterministic, so no wiki edits are allowed,
+	//so the wiki is the function (S (T (S I I)) (T (S I I))) which infinite loops for all possible params,
+	//so (λ (λ λ) λ λ λ λ λ "hello") -> (S I I (S I I)) aka never responds to the statement "hello".
+	//
+	//Similarly, if cleanS or cleanPair etc tries to create a dirty, it evals to (S I I (S I I)).
+	//Dirty can create clean, but clean cant create dirty. If a call starts as clean, it ends as clean,
+	//but if that was started by a dirty then when the clean is returned to the dirty,
+	//it can continue as dirty which contains some clean parts (still dirty as a whole).
+	//
+	//Theres a clean/deterministic vs dirty/nondeterministic form of everything.
+	//(aClean bClean) -> thing_that_clean.
+	//(aDirty bDirty) -> thing_that_clean_or_dirty.
+	//(aDirty bClean) -> thing_that_clean_or_dirty.
+	//(aClean bDirty) -> (aClean (recursivelyChangeFirstParamsToClean bDirty)) -> (aClean bClean) -> thing_that_clean.
+	
 	
 	/*FIXME move the wiki and ax ops so that theres only 1 possible isdirty form of them,
 	so that they use u instead of (u u) in their opcodes, or at least that way for wiki
@@ -24,17 +47,21 @@ public enum Op{
 	*/
 	l(1),
 	
-	/** (r x) is left child of x in the binary forest of call pairs.
+	/** (r x) is right child of x in the binary forest of call pairs.
 	Not the same as lispCdr since pair is the church-pair lambda.
 	isLeaf, l, and r make this a "pattern calculus function".
 	*/
 	r(1),
+	
+	//l and r differ by only 1 opcode bit (being leaf vs anything_except_leaf*)
 	
 	/** λy.λz.y aka true. (pair b c true) is b. Is the K lambda of https://en.wikipedia.org/wiki/SKI_combinator_calculus */
 	t(2),
 	
 	/** λy.λz.z aka false aka f. (fi λ) is identityFunc aka λz.z. (pair b c false) is c. */
 	fi(2),
+	
+	//t and fi differ by only 1 opcode bit (being leaf vs anything_except_leaf*)
 	
 	/** λx.λy.λz.zxy. Is the church-pair lambda and lispCons. */
 	pair(3),
@@ -43,6 +70,8 @@ public enum Op{
 	Other funcs can see the difference between typeval and pair using isLeaf, l, r, and a derived equals function.
 	*/
 	typeval(3),
+	
+	//t and fi differ by only 1 opcode bit (being leaf vs anything_except_leaf*) 
 	
 	/** λx.λy.λz.xz(yz) aka ((xz)(yz)). Is the S lambda of https://en.wikipedia.org/wiki/SKI_combinator_calculus */
 	s(3),
@@ -58,10 +87,12 @@ public enum Op{
 	*/
 	curry(3), //will have to derive secondLast func
 	
-	/** λret.λparam.λfunc.(λret.λparam.λfunc.(λret.λparam.λfunc.(...))) is halted if (func param)->ret,
+	/** λret.λfunc.λparam.(λret.λfunc.λparam.(λret.λfunc.λparam.(...))) is halted if (func param)->ret,
 	else evals to (S I I (S I I)) aka an infinite loop. 1 more param and it does...
-	λret.λparam.λfunc.λignore.(S I I (S I I)) aka an infinite loop, to complete the 7 params of the universal func,
+	λret.λfunc.λparam.λignore.(S I I (S I I)) aka an infinite loop, to complete the 7 params of the universal func,
 	but we dont normally call it all the way to λignore, just use the first 3.
+	TODO explain λret.λfunc.λparam.(λret.λfunc.λparam.(λret.λfunc.λparam.(...))) differently
+	cuz that way of writing it makes it appear that it takes 3 more params, instead of the 3 params already given.
 	<br><br> 
 	Theres a !isDirty and isDirty form of this. Theres nothing dirty about it, other than possibly its params.
 	(ax ret param func) will eventually halt (and cache that) if (func param)->ret (use derived equals func).
@@ -90,6 +121,20 @@ public enum Op{
 	as a recognizer function of the the thing which a Compiled.java would compute procedurally forward,
 	those things being the various axiom-like statements or their outputs like in earlier wikibinator versions
 	where that got too complex and I redesigned it to only need this one ax op with exponential optimizations.
+	<br><br>
+	OLD...
+	Ok, updated comments (changed from λret.λparam.λfunc) for...
+	should it be (ax func ret param) is halted if (func param)->ret?
+		cuz that way ret could be leaf and func is like a type,
+		such as (ax ifItsACatPicThenReturnLeaf leaf aPossibleCatPic) would be halted
+		only if (ifItsACatPicThenReturnLeaf aPossibleCatPic)->leaf,
+		and it could hook into axiomforest similar as the other way like
+		(ifItsACatPicThenReturnLeafElseLeafofleaf aPossibleCatPic)->(leaf leaf)
+			if its certainly not a cat pic, and any return other than leaf or (leaf leaf) could mean unknown
+			and if it never halts thats also unknown.
+		Its still the same 3 params as (ax func ret param), or (ax ret func param) would also work,
+		but func cant be the last one cuz func has control.
+	Similarly func could be something that calls its param on another func, if you want it to do some other order.
 	*/
 	ax(4);
 	

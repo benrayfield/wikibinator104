@@ -1,19 +1,47 @@
 /** Ben F Rayfield offers this software opensource MIT license */
 package wikibinator104.impl;
-import wikibinator104.*;
+import static wikibinator104.impl.ImportStatic.*;
+import wikibinator104.spec.*;
 
-public class Simpleλ implements λ{
+public class Simpleλ extends Abstractλ{
 	
 	//TODO a λ which is a Blob, from lazycl's Blob interface
 	
 	public final λ l, r;
 	
-	protected Compiled compiled;
+	public final byte isLeafsByte;
 	
+	/** leaf *
+	public Simpleλ(){
+		isLeafsByte = TODO this must be a specific thing given that leaf.l is identityFunc and leaf.r is leaf.
+	}*/
+	
+	/** nonleaf */
 	public Simpleλ(λ l, λ r){
 		this.l = l;
 		this.r = r;
+		
+		// |1 cuz this is not a leaf, cuz this has 2 childs.
+		//The 2 childs of leaf are identityFunc and leaf, but that would eval instantly and return leaf
+		//and is not a valid node by itself.
+		isLeafsByte = nextIsleafsByte(l.isLeafsByte());
+		//FIXME opposite order of bits? Should (isLeaf this) be the high or the low bit?		
+		
+		//verify isHalted. All λ must be halted, but if viewed in axiomforest,
+		//TruthValue.yes means isHalted and TruthValue.no means !isHalted,
+		//so it might be useful to allow nonhalted nodes to exist for that,
+		//just so TruthValue.no can say they are an invalid node.
+		//This could cause a problem for Op.ax since if its halted at second last param
+		//that means that for 3 of its params ret func param: (func param)->ret,
+		//and that usually cant be verified in bigo1 cuz it may never halt at all or halt in a million years,
+		//so if allow creating that λ (a call of Op.ax on ret func param) before (func param) halts
+		//then must store a bit (or maybe a TruthValue?) for has it halted yet,
+		//and the design is theres no data in λ except what can be derived from the 2 childs below
+		//when its created, aka caches derived from the binary forest shape of call pairs,
+		//and technically if something halts or not is determined only by its forest shape
+		//or at least in clean/deterministic mode (first param is not leaf).
 	}
+
 
 	public boolean a(){ return false; }
 
@@ -21,25 +49,6 @@ public class Simpleλ implements λ{
 
 	public λ r(){ return r; }
 
-	public λ p(λ r){
-		return new Simpleλ(this,r);
-		//FIXME instant partial dedup, and lazy perfect dedup
-	}
-
-	public λ e(λ r){
-		return e(Long.MAX_VALUE, r).fn; //FIXME what if .fn is null
-	}
-
-	public $λ e(long maxSpend, λ r){
-		throw new RuntimeException("TODO call compiled.apply(this,r) but fixme where to put maxSpend? is BinaryOperator the wrong interface?");
-	}
-
-	public Compiled compiled(){
-		return compiled;
-	}
-
-	public void setCompiled(Compiled c){
-		this.compiled = compiled;
-	}
+	public byte isLeafsByte(){ return isLeafsByte; }
 
 }
