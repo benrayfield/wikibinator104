@@ -12,6 +12,7 @@ public class Leaf extends Abstractλ{
 	
 	public static final λ instance = new Leaf();
 
+	/** true, this is the leaf */
 	public boolean a(){ return true; }
 
 	public λ l(){ return I; }

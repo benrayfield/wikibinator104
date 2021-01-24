@@ -43,6 +43,7 @@ public class Simpleλ extends Abstractλ{
 	}
 
 
+	/** false, this is not a leaf */
 	public boolean a(){ return false; }
 
 	public λ l(){ return l; }

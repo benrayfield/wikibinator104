@@ -67,9 +67,18 @@ public class ImportStatic{
 	
 	/** the universal function aka the leaf which all paths in binary forest of call pairs lead to */
 	public static final λ u = Leaf.instance;
+	//There is no dirty u.
 	
 	public static final λ uu = u.p(u);
-	public static final λ Uu = uu.dirty();
+	//There is no dirty (u u).
+	
+	//There is no dirty u or dirty (u u), but anything else has 2 forms: clean and dirty,
+	//except FIXME what if theres a clean thing or dirty thing in first param of u other than u vs uu.
+	//I dont plan to put anything but u or uu in first param of u, but it will happen in dovetailing
+	//and in just randomly calling funcs on eachother, so the cleanness vs dirtyness of it must be defined.
+	//Probably this will simply be (isClean x) means is its first param u or is it equal to u.
+	
+	
 	
 	//lowercase op name is clean, like wiki. Capital op name is dirty, like Wiki.
 	//u is clean.
@@ -112,6 +121,8 @@ public class ImportStatic{
 	public static final λ ax      = bootOp(u,	uu,	uu);
 	public static final λ Ax      = ax.dirty();
 	
+	
+	
 	/** identityFunc */
 	public static final λ i       = cp(fi,u);
 	public static final λ I       = i.dirty();
@@ -120,8 +131,12 @@ public class ImportStatic{
 	
 	public static λ t(λ x){ return cp(t,x); }
 	
-	/** TODO also create lazig, which is a λfunc.λparam.λignore.(func param) */
-	public static λ lazy(λ func, λ param){ return cp(s,t(func),t(param)); }
+	/** TODO also create lazig, which is a λfunc.λparam.λignore.(func param).
+	FIXME handle clean vs dirty.
+	*/
+	public static λ lazy(λ func, λ param){
+		return cp(s,t(func),t(param));
+	}
 	
 	public static final λ funcThatInfloopsForAllPossibleParams = lazy(callParamOnItself,callParamOnItself);
 	

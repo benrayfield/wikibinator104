@@ -76,7 +76,13 @@ public enum Op{
 	/** λx.λy.λz.xz(yz) aka ((xz)(yz)). Is the S lambda of https://en.wikipedia.org/wiki/SKI_combinator_calculus */
 	s(3),
 	
-	/** λunaryNumber.λparamList.λnextParam.(...
+	/** UPDATE: the unaryNumber goes in linkedlist, and [a b c d] means [[[a b] c] d],
+	and <a b c d> means [a [b [c d]]], and *x means (curry x), and ,,,x means (T (T (T x))).
+	*[u "a fibonacci function ... comment..." funcBody u]
+	*[u comment funcBody a b ,,,u]
+	<br><br>
+	OLD...
+	λunaryNumber.λparamList.λnextParam.(...
 	if (isLeaf unaryNumber)
 	then (secondLastInLinkedlist paramList (pair nextParam paramList))
 	else (curry (r unaryNumber) (pair nextParam paramsList))
@@ -85,7 +91,12 @@ public enum Op{
 	though occamsfuncer is still using java to call some of the lambdas on eachother to make lambdas,
 	cuz the syntax is incomplete.
 	*/
-	curry(3), //will have to derive secondLast func
+	curry(2), //will have to derive secondLast func
+	//curry(3), //will have to derive secondLast func
+	
+	cleanCall(2),
+	
+	"TODO reorder the ops since changed curry from 3 params to 2 which made room for cleanCall op."
 	
 	/** λret.λfunc.λparam.(λret.λfunc.λparam.(λret.λfunc.λparam.(...))) is halted if (func param)->ret,
 	else evals to (S I I (S I I)) aka an infinite loop. 1 more param and it does...

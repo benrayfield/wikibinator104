@@ -19,7 +19,14 @@ public class InterpretedMode implements Evaler{
 		//considering that Op.ax evals at 6 and 7 curries, and everything else only at 7.
 		λ ret;
 		Op op = null; //FIXME get this from isLeafsByte
-		//TODO handle Op.ax with 6 curries here.
+		
+		//TODO handle Op.ax with 5 or 6 curries here (Todo choose 5 or 6 that eval should do something)...
+		//	Get its 3 params (ignoring its 4th, hasnt got it yet) and ret = call one on the other then call
+		//a derived equals function on what that returns to compare it to the return value in ax's param
+		//and if they dont equal then infloop else its halted and TODO cache that.
+		//Or... consider the existence of the 6 param form to be that cache, and call it at 5 (of 7) params...
+		//That seems the better way... todo that.
+		
 		switch(op){ //7 curries, normal eval
 		case wiki:
 			throw new RuntimeException("TODO (wiki x) == ret in (ax ret wiki x) if thats known and isDirty(isLeafsByte). (wiki x) infloops if isClean(isLeafsByte).");

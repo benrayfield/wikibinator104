@@ -2,7 +2,7 @@
 package wikibinator104.spec;
 import java.util.function.UnaryOperator;
 
-/** binary forest node, defined ONLY by its forest shape, with no data in each node
+/** immutable. binary forest node, defined ONLY by its forest shape, with no data in each node
 except caches which can be derived from that shape.
 A 7 param universal pattern combinator
 (aka combinator, universal lambda function, and pattern calculus function)
@@ -66,7 +66,13 @@ public interface λ extends UnaryOperator<λ>{
 		return e(r);
 	}
 	
-	/** cache of 8 of (isLeaf this) .. (isLeaf this.l.l.l.l.l.l.l) */
+	/** cache of 8 of (isLeaf this) .. (isLeaf this.l.l.l.l.l.l.l)
+	or FIXME is it (isLeaf this.r) .. (isLeaf this.l.l.l.l.l.l.l.r)
+	since a currylist is for example (u u (u u) u (u u) ...params...),
+	and want to know which things before ...params... are` u vs anything other than u.
+	Might need to pad a 1 bit to mark a bitstring size of 0..7 bits like did in an earlier wikibinator version
+	called the "op byte"??? If so, rename this to opByte.
+	*/
 	public byte isLeafsByte();
 	
 	public default λ clean(){
@@ -76,5 +82,16 @@ public interface λ extends UnaryOperator<λ>{
 	public default λ dirty(){
 		throw new RuntimeException("TODO returns a forkEdit of this where first param after leaf is (leaf leaf), unless it already is something other than leaf. TODO optimize this in Simpleλ by each keeping a ptr to the opposite clean/dirty.");
 	}
+	
+	public EvalerChain compiled();
+	
+	public void setCompiled(EvalerChain c);
+	
+	/** If this is a cbt (complete binary tree of pair of pair... of t vs f),
+	either as pure interpreted lambdas or a wrapper of a byte, long, float, array, nio Buffer, etc,
+	then view it as Blob (immutable).
+	TODO can this be null?
+	*/
+	public Blob blob();
 
 }
