@@ -1,3 +1,4 @@
+/** Ben F Rayfield offers this software opensource MIT license */
 package wikibinator104.impl.optimize;
 
 /** opcode is double. all possible opcodes are valid for all possible double[] mem states.
@@ -9,13 +10,18 @@ Eventually, optimizations will be compiled automatically instead of manually wri
 though this can optimize a huge variety of possible things as it is turingComplete,
 just not nearly as sparse as the usual function pointers.
 */
-public class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers {
+public strictfp class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers {
 	
 	/** ((int)double[IP])&mask is instructinPointer */
 	public static final int IP = 0;
 	
 	/** ((int)double[SP])&mask is stackPointer */
 	public static final int SP = 1;
+	
+	/** you may want to use double[HALT] as 0 to continue and any nonzero value (or cast to int is nonzero?) to continue,
+	of at most maxSteps number of steps in param of steps func???
+	*/
+	public static final int HALT = 2;
 	
 	public static double get(double ptr, double[] mem){
 		return mem[ptr(ptr,mem)];
@@ -49,7 +55,17 @@ public class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers {
 		mem[IP] = ptr;
 	}
 	
-	/** masked safe ptr, IF mem.length is powOf2 */
+	/** masked safe ptr, IF mem.length is powOf2.
+	<br><br>
+	System.out.println("nan"+(0./0.)+" asint:"+(int)(0./0.));
+	System.out.println("inf"+(1./0.)+" asint:"+(int)(1./0.));
+	System.out.println("-inf"+(-1./0.)+" asint:"+(int)(-1./0.));
+	System.out.println("ok");
+	nanNaN asint:0
+	infInfinity asint:2147483647
+	-inf-Infinity asint:-2147483648
+	ok        
+	*/
 	public static int ptr(double ptr, double[] mem){
 		return ((int)ptr)&(mem.length-1);
 	}
@@ -64,6 +80,10 @@ public class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers {
 		int nextSp = ptr(++sp,mem);
 		mem[SP] = nextSp;
 		mem[nextSp] = val;
+	}
+	
+	public static int popInt(double[] mem){
+		return (int)pop(mem);
 	}
 	
 	public static double pop(double[] mem){
@@ -83,9 +103,22 @@ public class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers {
 		mul = '*',
 		neg = '-',
 		add = '+',
+		intAnd = '&',
+		intOr = '|',
+		intXor = '^',
+		intNot = '~',
+		intNand = 'n',
+		intNor = 'N',
+		intMinorityOf3 = '3', //like nand and nor, this is an NP op
+		intShift = 'TODO choose a symbol for shift, and does it need upshift and downshift op or 1 op for all of it, and should it have a rotate op vs just do it with shifts ands and ors etc',
 		write = 'w',
 		read = 'r',
 		jump = 'j';
+	
+	/** a little slower than step(double[]) which doesnt check isHalted(double[]) */
+	public static void stepIfNotHalted(double[] mem){
+		if(!isHalted(mem)) step(mem);
+	}
 	
 	/** Modifies double[] mem. Does a bigO(1) amount of work.
 	mem.length must be a powOf2 and must be at least 2, normally much bigger.
@@ -101,9 +134,11 @@ public class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers {
 			switch((byte)opcode){
 			case memMask:
 				push(mem.length-1,mem);
+				nextIp(mem);
 			break;
 			case memSize:
 				push(mem.length,mem);
+				nextIp(mem);
 			break;
 			case mul:
 				push(pop(mem)*pop(mem),mem);
@@ -111,9 +146,41 @@ public class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers {
 			break;
 			case neg:
 				push(-pop(mem),mem);
+				nextIp(mem);
 			break;
 			case add:
 				push(pop(mem)+pop(mem),mem);
+				nextIp(mem);
+			break;
+			case intAnd:
+				push(popInt(mem)&popInt(mem), mem);
+				nextIp(mem);
+			break;
+			case intOr:
+				push(popInt(mem)|popInt(mem), mem);
+				nextIp(mem);
+			break;
+			case intXor:
+				push(popInt(mem)|popInt(mem), mem);
+				nextIp(mem);
+			break;
+			case intNot:
+				push(~popInt(mem), mem);
+				nextIp(mem);
+			break;
+			case intNand:
+				push(~(popInt(mem)&popInt(mem)), mem);
+				nextIp(mem);
+			break;
+			case intNor:
+				push(~(popInt(mem)|popInt(mem)), mem);
+				nextIp(mem);
+			break;
+			case intMinorityOf3:
+				int x = popInt(mem), y = popInt(mem), z = popInt(mem);
+				push(~(x&y)^(y&z)^(z&x), mem);
+				//This is an NP op, similar to NAND and NOR. Its output is 1 vs 0 equally often, given random inputs.
+				//NOT OF: "maj := (a and b) xor (a and c) xor (b and c)" -- https://en.wikipedia.org/wiki/SHA-2
 				nextIp(mem);
 			break;
 			case write:
@@ -128,12 +195,34 @@ public class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers {
 				jump(pop(mem),mem);
 			break;
 			TODO other basic math ops etc.
+			TODO around 32 local memory slots to read and write into from stack andOr to copy andOr swap between
+			the top n parts of stack (all masked so all ops are valid for all possible double[] mem states)
+			TODO a form of this that works with undomem and concat of cbts during it
+			andOr just a form of it that runs n steps, or runs until a certain index contains value 0 (halt condition),
+			then do concat and subrange as cbts then do more of this on such concats/subranges etc,
+			and use that to build some simple graphics and game demos, proofOfconcepts that
+			the lambdas can be optimized, even though there are far better optimizations to do later.
 			}
 		}
 	}
 	
-	public static void steps(int steps, double[] mem){
+	public static boolean isHalted(double[] mem){
+		return mem[HALT] != 0;
+	}
+	
+	public static void steps(long steps, double[] mem){
 		while(steps-- > 0) step(mem);
+	}
+	
+	public static void stepsOrChoosesToHalt(long maxSteps, double[] mem){
+		while(!isHalted(mem) && maxSteps-- > 0) step(mem);
+	}
+	
+	/** its recommended to use stepsOrChoosesToHalt instead cuz this might never halt,
+	but stepsOrChoosesToHalt(...) and steps(...) always halt.
+	*/
+	public static void stepsUntilChoosesToHalt(double[] mem){
+		while(!isHalted(mem)) step(mem);
 	}
 	
 	public static void main(String[] args){
