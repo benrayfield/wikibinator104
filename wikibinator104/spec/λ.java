@@ -1,5 +1,6 @@
 /** Ben F Rayfield offers this software opensource MIT license */
 package wikibinator104.spec;
+import java.lang.ref.WeakReference;
 import java.util.function.UnaryOperator;
 
 /** immutable. binary forest node, defined ONLY by its forest shape, with no data in each node
@@ -99,5 +100,12 @@ public interface λ extends UnaryOperator<λ>{
 	TODO can this be null?
 	*/
 	public Blob blob();
+	
+	/** WeakReference to this λ. TODO should this be a field in Simpleλ vs created every time this is called?
+	The default implementation of this creates a new WeakReference each time.
+	*/
+	public default WeakReference<λ> weakref(){
+		return new WeakReference(this);
+	}
 
 }

@@ -20,5 +20,12 @@ public class Cache{
 	since no λ can have a ptr to it, but can have a ptr to the (Op.ax ret func param) form of it
 	aka ReturnFuncParamCache.reflect().
 	*/
+	
+	TODO represent this as 4 longs each, 3 of them long localIds of (not fully deduped) λs,
+	and 1 of those garbcolOrder? andOr 1 as number of incoming ptrs? and where is large storage of blobs?
+	and might also a need a ptr to its replacement such as if duplicates are found, choose one as norm
+	and point the others at it to replace self with that.
+	thats useful if wanted to store it in a file etc, or a long[] in memory, or combo of that.
+	but for now should focus on efficient caching in memory.
 
 }
