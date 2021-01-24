@@ -195,5 +195,9 @@ public class ImportStatic{
 			sum += 1<<x.params;
 		}
 	}*/
+	
+	public static byte parentOpByte(byte leftOpByte, byte rightOpByte){
+		throw new RuntimeException("TODO");
+	}
 
 }

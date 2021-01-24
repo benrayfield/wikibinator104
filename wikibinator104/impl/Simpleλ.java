@@ -9,7 +9,7 @@ public class Simpleλ extends Abstractλ{
 	
 	public final λ l, r;
 	
-	public final byte isLeafsByte;
+	public final byte opByte;
 	
 	/** leaf *
 	public Simpleλ(){
@@ -20,11 +20,12 @@ public class Simpleλ extends Abstractλ{
 	public Simpleλ(λ l, λ r){
 		this.l = l;
 		this.r = r;
+		this.opByte = parentOpByte(l.opByte(),r.opByte());
 		
 		// |1 cuz this is not a leaf, cuz this has 2 childs.
 		//The 2 childs of leaf are identityFunc and leaf, but that would eval instantly and return leaf
 		//and is not a valid node by itself.
-		isLeafsByte = nextIsleafsByte(l.isLeafsByte());
+		//isLeafsByte = nextIsleafsByte(l.isLeafsByte());
 		//FIXME opposite order of bits? Should (isLeaf this) be the high or the low bit?		
 		
 		//verify isHalted. All λ must be halted, but if viewed in axiomforest,
@@ -49,7 +50,5 @@ public class Simpleλ extends Abstractλ{
 	public λ l(){ return l; }
 
 	public λ r(){ return r; }
-
-	public byte isLeafsByte(){ return isLeafsByte; }
 
 }

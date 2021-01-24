@@ -72,8 +72,14 @@ public interface λ extends UnaryOperator<λ>{
 	and want to know which things before ...params... are` u vs anything other than u.
 	Might need to pad a 1 bit to mark a bitstring size of 0..7 bits like did in an earlier wikibinator version
 	called the "op byte"??? If so, rename this to opByte.
-	*/
+	*
 	public byte isLeafsByte();
+	*/
+	
+	/** similar to isLeafsByte (obsoleted) except its 0..7 bits then a high 1 bit like a binheapIndex,
+	for is each param of leaf, is it leaf vs any nonleaf (default is (leaf leaf)).
+	*/s
+	public byte opByte();
 	
 	public default λ clean(){
 		throw new RuntimeException("TODO returns a forkEdit of this where first param after leaf is leaf, unless it already is. TODO optimize this in Simpleλ by each keeping a ptr to the opposite clean/dirty.");

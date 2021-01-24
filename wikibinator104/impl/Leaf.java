@@ -15,10 +15,8 @@ public class Leaf extends Abstractλ{
 	/** true, this is the leaf */
 	public boolean a(){ return true; }
 
-	public λ l(){ return I; }
+	public λ l(){ return i; }
 
 	public λ r(){ return this; }
-
-	public byte isLeafsByte(){ return isLeafsByte; }
 
 }

@@ -20,10 +20,6 @@ public abstract class Abstractλ implements λ{
 		//It might take a long time to use that much gas, depending how the cost of compute resources is defined.
 		return e(Long.MAX_VALUE, r).fn;
 	}
-
-	public $λ e(long maxSpend, λ r){
-		return chain.eval(maxSpend, this, r);
-	}
 	
 	public EvalerChain compiled(){
 		return chain;
