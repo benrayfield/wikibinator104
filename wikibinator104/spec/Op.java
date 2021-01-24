@@ -3,6 +3,28 @@ package wikibinator104.spec;
 
 public enum Op{
 	
+	/** Anything thats not halted is deepLazy,
+	other than if its l() and r() are halted but it is not cuz r() is its 7th param,
+	that uses the same op as r()'s op.
+	This is a low level of lazy that does not exist in the wikibinator104 prototype
+	but may in other implementations of wikibinator104.
+	<br><br>
+	Wikibinator104 is (TODO after work out details) a specific pure math function not a specific system.
+	<br><br>
+	Wikibinator104 can (in theory) be mounted into (axiomforestLeaf "wikibinator104"),
+	using axiomforest's kind of strings for that,
+	where wikibinator104Leaf is (axiomforestLeaf "wikibinator104") and wikibinator104
+	cant see anything outside of (axiomforestLeaf "wikibinator104"),
+	and calling it on anything outside that is axiomforest.TruthValue.no,
+	so for it to see other systems it would have to emulate axiomforest such as using
+	(pair cbt16_axiomforestHeader (pair axiomforestLeftChild axiomforestRightChild)) for example.
+	*/
+	deeplazy(0),
+	
+	//First param is λ (aka u aka leaf) for clean, or anything else (such as (λ λ)) for dirty.
+	//
+	//OLD...
+	//
 	//First param chooses isClean vs !isClean. In choosing opcodes, leaf is 0, and anything else is 1.
 	//isClean = !isDirty.
 	//Wiki is the first opcode, so dirtyWiki = (λ λ λ λ λ λ λ),
@@ -32,14 +54,50 @@ public enum Op{
 	*/
 	
 	
-	/** if strict this is (S I I (S I I)), else is loose and (wiki x) == ret in (ax ret x wiki) */ 
+	/** if strict this is (S I I (S I I)), else is loose and (wiki x) == ret in (ax ret wiki x).
+	<br><br>
+	You can effectively have unlimited number of wikis by using a linkedlist whose deepest part is the name of the wiki,
+	and parts after that you use whatever you want, for example,
+	and to fork one of those, use axioms (dovetailing derived in params of Op.ax, for example)
+	to imply that if something exists in some parts of wiki then it exists (or translating it / migration / etc)
+	in certain other parts, though convergence on a set of axioms is intentionally left nondeterministic
+	so various groups of people and systems or combos of them or the whole world together,
+	however they like to organize things, have not created a lambda contradiction (TruthValue.bull)
+	by selecting from the space of all finite but otherwise turing complete ways to organize the wiki,
+	where TruthValue.bull occurs when the same lambda call (func param) has more than 1 unique return value
+	such as (wiki "hello")->"world" and (wiki "hello")->42 cant both exist,
+	but (wiki ["testxyz435" "hello"])->"world" and (wiki ["monkeyspace" "hello"])->42 can exist together,
+	or (wiki "testxyz435.hello") would also work, however you want to do it, just dont create lambda contradictions.
+	Wiki is a pure math function and can call itself recursively, emulate itself, etc,
+	such as (wiki "lazyCallWikiOnItself") -> {,wiki ,wiki} aka (s (t wiki) (t wiki))
+	so if that exists (check Op.ax for any returnVal func param)
+	then (wiki "lazyCallWikiOnItself" u) -> (wiki wiki),
+	and there might be (wiki wiki)->"this is the return value of calling wiki on itself"
+	so in that case (wiki "lazyCallWikiOnItself" u) -> "this is the return value of calling wiki on itself",
+	or you could also use (s i i x) -> (x x) forall x, so (s i i wiki) -> (wiki wiki) -> whatever that returns.
+	You could also make a function locally named testxyz435
+	where (testxyz435 x) -> (wiki ["testxyz435" x]). Functions are useful for many possible things
+	including convenient shortcuts or building virtual worlds so big and detailed
+	you might mistake it for a remote interaction with the real world. You can put anything
+	in the wiki as long as it doesnt create any lambda contradictions with the other contents
+	and if you can get other people and computers to go along with it in them
+	trying to not create lambda contradictions anywhere in the wiki considering its whole contents.
+	The system will automatically look for such contradictions and automatically fork and merge
+	in whatever ways people want it to as defined by functions they can create
+	to help them understand other functions and create new useful functions.
+	Everything can be automated and the automatic processes
+	(built by people and AIs while using other automated processes)
+	can choose between people andOr AIs at the time and context for whatever each does best,
+	and if that doesnt work out, try other combos automatically.
+	Everything gets connected to everything if thats what those parts want at the time and context.
+	*/ 
 	wiki(1),
 	
 	/** (isLeaf x) is t or f depending if x is the leaf which all paths in the binary forest of call pairs lead to
 	aka the wikibinator104 universal function itself.
 	isLeaf, l, and r make this a "pattern calculus function".
 	*/
-	isLeaf(1),
+	isleaf(1),
 	
 	/** (l x) is left child of x in the binary forest of call pairs.
 	Not the same as lispCar since pair is the church-pair lambda.
@@ -63,19 +121,6 @@ public enum Op{
 	
 	//t and fi differ by only 1 opcode bit (being leaf vs anything_except_leaf*)
 	
-	/** λx.λy.λz.zxy. Is the church-pair lambda and lispCons. */
-	pair(3),
-	
-	/** λx.λy.λz.zxy, same as pair except with the semantic like (typeval "image/jpeg" ...bytesOfJpg...).
-	Other funcs can see the difference between typeval and pair using isLeaf, l, r, and a derived equals function.
-	*/
-	typeval(3),
-	
-	//t and fi differ by only 1 opcode bit (being leaf vs anything_except_leaf*) 
-	
-	/** λx.λy.λz.xz(yz) aka ((xz)(yz)). Is the S lambda of https://en.wikipedia.org/wiki/SKI_combinator_calculus */
-	s(3),
-	
 	/** UPDATE: the unaryNumber goes in linkedlist, and [a b c d] means [[[a b] c] d],
 	and <a b c d> means [a [b [c d]]], and *x means (curry x), and ,,,x means (T (T (T x))).
 	*[u "a fibonacci function ... comment..." funcBody u]
@@ -94,9 +139,22 @@ public enum Op{
 	curry(2), //will have to derive secondLast func
 	//curry(3), //will have to derive secondLast func
 	
-	cleanCall(2),
+	cleancall(2),
 	
-	"TODO reorder the ops since changed curry from 3 params to 2 which made room for cleanCall op."
+	//curry and cleanCall differ by only 1 opcode bit (being leaf vs anything_except_leaf*)
+	
+	/** λx.λy.λz.xz(yz) aka ((xz)(yz)). Is the S lambda of https://en.wikipedia.org/wiki/SKI_combinator_calculus */
+	s(3),
+	
+	/** λx.λy.λz.zxy. Is the church-pair lambda and lispCons. */
+	pair(3),
+	
+	/** λx.λy.λz.zxy, same as pair except with the semantic like (typeval "image/jpeg" ...bytesOfJpg...).
+	Other funcs can see the difference between typeval and pair using isLeaf, l, r, and a derived equals function.
+	*/
+	typeval(3),
+	
+	//pair and typeval differ by only 1 opcode bit (being leaf vs anything_except_leaf*)
 	
 	/** λret.λfunc.λparam.(λret.λfunc.λparam.(λret.λfunc.λparam.(...))) is halted if (func param)->ret,
 	else evals to (S I I (S I I)) aka an infinite loop. 1 more param and it does...
@@ -171,11 +229,17 @@ public enum Op{
 		this.params = params;
 	}
 	
+	public static void lg(String line){
+		System.out.println(line);
+	}
+	
 	//FIXME need to get rid of some ops so it fits.
 	public static void main(String[] args){
 		int sum = 0;
+		lg("Ops...");
 		for(Op op : Op.values()){
-			sum += 1<<op.params;
+			if(op.params != 0) sum += 1<<op.params;
+			lg("Op."+op+"("+op.params+")");
 		}
 		sum *= 2; //cuz first of 7 params chooses !isDirty (leaf) vs isDirty (anything except leaf)
 		System.out.println("sum="+Integer.toBinaryString(sum));

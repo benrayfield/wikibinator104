@@ -52,17 +52,20 @@ public class ImportStatic{
 	Or could define that (u u) is the prefix of dirty things but u and (u u) are both clean.*/
 	
 	
-	/*wiki(1)
-	isLeaf(1)
-	l(1)
-	r(1)
-	t(2)
-	fi(2)
-	pair(3)
-	typeval(3)
-	s(3)
-	curry(3)
-	ax(4)*/
+	/*Op.deepLazy(0)
+	Op.wiki(1)
+	Op.isLeaf(1)
+	Op.l(1)
+	Op.r(1)
+	Op.t(2)
+	Op.fi(2)
+	Op.curry(2)
+	Op.cleanCall(2)
+	Op.s(3)
+	Op.pair(3)
+	Op.typeval(3)
+	Op.ax(4)*/
+	
 
 	
 	/** the universal function aka the leaf which all paths in binary forest of call pairs lead to */
@@ -88,44 +91,75 @@ public class ImportStatic{
 	
 	//FIXME reverse order and swap u with uu, in the following?
 	
-	public static final λ wiki    = bootOp(u,	u,	u,	u,	u,	u);
-	public static final λ Wiki    = wiki.dirty();
 	
-	public static final λ isLeaf  = bootOp(u,	u,	u,	u,	u,	uu);
-	public static final λ IsLeaf  = isLeaf.dirty();
+	//Op.deeplazy is not a λ in this prototype cuz this prototype only has halted λs and uses java stack for the nonhalted parts,
+	//but you can build something similar to occamsfuncer callquads inside calls of Op.ax
+	//(dovetailing may be needed as an abstraction, but compute it procedurally forward efficiently using Evaler/Compiled).
 	
-	public static final λ l       = bootOp(u,	u,	u,	u,	uu,	u);
-	public static final λ L       = l.dirty();
+	public static final λ wiki      = bootOp(u,	u,	u,	u,	u,	u);
+	public static final λ Wiki      = wiki.dirty();
 	
-	public static final λ r       = bootOp(u,	u,	u,	u,	uu,	uu);
-	public static final λ R       = r.dirty();
+	public static final λ isleaf    = bootOp(u,	u,	u,	u,	u,	uu);
+	public static final λ Isleaf    = isleaf.dirty();
 	
-	public static final λ t       = bootOp(u,	u,	u,	uu,	u);
-	public static final λ T       = t.dirty();
+	public static final λ l         = bootOp(u,	u,	u,	u,	uu,	u);
+	public static final λ L         = l.dirty();
 	
-	public static final λ fi      = bootOp(u,	u,	u,	uu,	uu);
-	public static final λ Fi      = fi.dirty();
+	public static final λ r         = bootOp(u,	u,	u,	u,	uu,	uu);
+	public static final λ R         = r.dirty();
 	
-	public static final λ pair    = bootOp(u,	u,	uu,	u);
-	public static final λ Pair    = pair.dirty();
+	public static final λ t         = bootOp(u,	u,	u,	uu,	u);
+	public static final λ T         = t.dirty();
 	
-	public static final λ typeval = bootOp(u,	u,	uu,	uu);
-	public static final λ Typeval = typeval.dirty();
+	public static final λ fi        = bootOp(u,	u,	u,	uu,	uu);
+	public static final λ Fi        = fi.dirty();
 	
-	public static final λ s       = bootOp(u,	uu,	u,	u);
-	public static final λ S       = s.dirty();
+	public static final λ curry     = bootOp(u,	u,	uu,	u,	u);
+	public static final λ Curry     = curry.dirty();
 	
-	public static final λ curry   = bootOp(u,	uu,	u,	uu);
-	public static final λ Curry   = curry.dirty();
+	public static final λ cleancall = bootOp(u,	u,	uu,	u,	uu);
+	//even though its dirty, it still converts params to clean and returns a clean
+	public static final λ Cleancall = cleancall.dirty();
 	
-	public static final λ ax      = bootOp(u,	uu,	uu);
-	public static final λ Ax      = ax.dirty();
+	public static final λ s         = bootOp(u,	u,	uu,	uu);
+	public static final λ S         = s.dirty();
+	
+	public static final λ pair      = bootOp(u,	uu,	u,	u);
+	public static final λ Pair      = pair.dirty();
+	
+	public static final λ typeval   = bootOp(u,	uu,	u,	uu);
+	public static final λ Typeval   = typeval.dirty();
+	
+	public static final λ ax        = bootOp(u,	uu,	uu);
+	public static final λ Ax        = ax.dirty();
 	
 	
 	
 	/** identityFunc */
 	public static final λ i       = cp(fi,u);
 	public static final λ I       = i.dirty();
+	
+	/** like cleancall except it just has 1 param, the thing to clean,
+	which forkEdits param recursively to have u as all first params of u. There are no nonnormed clean forms.
+	<br><br>
+	FIXME update comments other places which say nonleaf is clean. Instead, leaf is clean, and nonleaf is dirty,
+	in th at first param, such as (u u u u u u u) is cleanwiki and (u (u u) u u u u u) is a dirtywiki,
+	and of course all forms of the wiki opcode use the same wiki.
+	*/
+	public static final λ cleanone = cleancall.p(i);
+	//even though its dirty, it still converts param to clean and returns it
+	public static final λ Cleanone = cleanone.dirty();
+	
+	/** counterpart of cleanone and Cleanone. Returns a dirty form of its param,
+	by forkEditing it recursively for all first params (of leaf) to be a nonleaf,
+	and if they are already not a leaf then leaves them as they are else uses (leaf leaf) aka (u u).
+	*/
+	public static final λ Dirtyonepassive = null; //FIXME not null
+	
+	/** returns the normed dirty form, where all first params (of leaf) are (leaf leaf) aka (u u).
+	Similar to Dirtyonepassive except which nonleaf in first param.
+	*/
+	public static final λ Dirtyonenorm = null; //FIXME not null
 	
 	public static final λ callParamOnItself = cp(cp(s,i),i);
 	
