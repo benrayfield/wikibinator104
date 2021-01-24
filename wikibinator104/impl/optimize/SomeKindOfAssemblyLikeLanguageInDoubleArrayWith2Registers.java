@@ -93,8 +93,8 @@ public class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers {
 	*/
 	public static void step(double[] mem){
 		double opcode = opcode(mem);
-		if(opcode >= 0){
-			//If opcode is nonnegative then push it as literal on stack. If want to push a negative literal,
+		if(opcode <= 0){
+			//If opcode is nonpositive then push it as literal on stack. If want to push a negative literal,
 			//do that then use NEG opcode, so 2 opcodes.
 			push(opcode, mem);
 		}else{
