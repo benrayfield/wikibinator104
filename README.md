@@ -32,7 +32,10 @@ If you want a linkedlist you have to write the λ like in <w x y z λ>.
 *x means (curry x), such as in (*[λ "add 3 doubles" {...func body...} ,,λ] 5 10 100.3) -> 115.3
 
 +ddd = *[λ "add 3 doubles" {...func body...} ,,λ]
+(+ddd 5) -> *[λ "add 3 doubles" {...func body...} 5 ,λ]
+(+ddd 5 10) -> *[λ "add 3 doubles" {...func body...} 5 10 λ]
 (+ddd 5 10 100.3) -> 115.3
+(+ddd x y z) -> ({...func body...} [λ "add 3 doubles" {...func body...} x y z])
 (l +ddd) -> curry
 (r +ddd) -> [λ "add 3 doubles" {...func body...} ,,λ]
 (r (r +ddd)) -> ,,λ
