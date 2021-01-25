@@ -51,8 +51,17 @@ public strictfp class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers 
 		return ptr(mem[SP],mem);
 	}
 	
-	public static void jump(double ptr, double[] mem){
+	public static void jumpIp(double ptr, double[] mem){
 		mem[IP] = ptr;
+	}
+	
+	public static void jumpSp(double ptr, double[] mem){
+		mem[SP] = ptr;
+	}
+	
+	public static void jumpIpAndSp(double ptrIp, double ptrSp, double[] mem){
+		mem[IP] = ptrIp;
+		mem[SP] = ptrSp;
 	}
 	
 	/** masked safe ptr, IF mem.length is powOf2.
@@ -94,6 +103,9 @@ public strictfp class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers 
 	}
 	
 	public static void addToSp(int add, double[] mem){
+		//FIXME does this need to use ptr(mem[SP],mem)+1 instead of mem[SP]+1?
+		//Might overflow in some rare cases so +1 doesnt change its value, but could just make that the normal behavior,
+		//so as long as its deterministic its ok. Which behavior do I want?
 		mem[SP] = ptr(mem[SP]+add,mem);
 	}
 	
@@ -146,7 +158,7 @@ public strictfp class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers 
 			//do that then use NEG opcode, so 2 opcodes.
 			push(-opcode, mem);
 			nextIp(mem);
-		}else{
+		}else if(opcode < 128)
 			byte opcodeByte = (byte)opcode;
 			switch(opcodeByte){
 			case noop:
@@ -239,8 +251,14 @@ public strictfp class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers 
 				push(pop(mem)==0?0:1,mem);
 				nextIp(mem);
 			break;
-			case jump:
-				jump(pop(mem),mem);
+			case jumpIp:
+				jumpIp(pop(mem),mem);
+			break;
+			case jumpSp:
+				jumpSp(pop(mem),mem);
+			break;
+			case jumpIpAndSp:
+				jumpIpAndSp(pop(mem),pop(mem),mem);
 			break;
 			TODO a copy range op that calls System.arraycopy? What about the bigo1 per step?
 				Maybe step should return the cost of the step and never let it get more than some small limit such max size 256 copied?
@@ -263,7 +281,23 @@ public strictfp class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers 
 			and use that to build some simple graphics and game demos, proofOfconcepts that
 			the lambdas can be optimized, even though there are far better optimizations to do later.
 			TODO 4 or 6 1-byte ops per double, and the others can be noops if dont want to use like if one is a jump?
+
+			todo float opcodes, especially since everything is represented as doubles,
+			things like (double)((float)x*(float)y), which may be hard to do in javascript
+			(not even Float64Array can do float multiply efficiently cuz converts to double first i tested it,tepa
+			but of course it still has to do the exact bit math it says even if theres not hardware optimization for it),
+			but in desktop languages etc should be ok.
 			}
+		}else{ //128 <= opcode
+			todo 53 bit opcode for acyclicflowlike, 32 (double,double)->double ops (the low 32 of the byte vals)
+			and 16 bits of address of each of 3 ptrs of mem[0..2^16-1]... This will make music tools fast enough
+			for realtime interactive, and it just costs a check of (byte)doubleX==doubleX or checking doubleX>=128.
+			have tested similar thing, maybe with longs or was it doubles, and it got was it around
+			30million (double,double)->double per second or something around that speed. At 22khz that
+			means 1360 ops per sound vibration, which is enough for interesting musical instruments and
+			for example to compute realtime fourier on around 100 frequencies maybe (see that jsoundcard
+					sample code, where did i put that, the one with Freqing.java where it decays toward radius
+					1 using 1+derivative/2 instead of doing the more expensive sqrt or something like that.
 		}
 	}
 	

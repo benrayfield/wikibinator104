@@ -3,6 +3,44 @@ Scalable gaming-low-lag p2p wiki of 1 editable universal function, thats a unive
 
 For ages 0 to expert. It will teach you how itself and every known kind of math works and to build fun games and useful tools and play and work together, from the basics of math counting on your fingers up to the most advanced AI and number crunching and scaleable systems deployed in realtime, and for millions of people to be able to do that together in p2p without anyone being above or below anyone else, just merges and forks in binary forest of immutable objects viewed any way you like as functions can be built to view functions in new ways. (TODO).
 
+Later it will create its own graphics per pixel (around 60 times per second) and sounds per wave amplitude (around 20000 times per second), with drag-and-drop function onto function to find/create function, and other intuitive ways of using it. Here's how it might look when used as a programming language...
+
+λ //is the universal function, also often named u or leaf or Λ. In java λ.java is the main object type.
+
+//pair, typeval, l, r, t, f, i, isleaf, curry, wiki, ax are functions you can make with λ.
+
+(x y) //is x called on y.
+
+(x y z) //is ((x y) z)
+
+{x y} //is (s x y)
+
+{x y z} //is {s {x y} z}
+
+[x y] //is (pair x y)
+
+[x y z] //is [[x y] z]. If you want a linkedlist you have to write the λ like in [λ x y z].
+
+<x y> //is (pair x y), but [x y] is how its normally displayed if theres only 2.
+
+<w x y z> is [w <x y z>] is [w [x [y z]]]. If you want a linkedlist you have to write the λ like in <w x y z λ>.
+
+,x means (t x). ,,,x means (t (t (t x))).
+
+*x means (curry x), such as in (*[λ "add 3 doubles" {...func body...} ,,λ] 5 10 100.3) -> 115.3
+
+(ax  115.3 (*[λ "add 3 doubles" {...func body...} ,,λ] 5 10) 100.3) //means ret<-(func param) is true.
+
+//(wiki x) is defined only by the statements made by ax such as (ax "world" (wiki "hello")) causes "world"<-(wiki "hello") to be true, but in theory it can also pattern match or have things built into some of the VMs based on belief in those patterns (will be tested automatically in realtime, that it doesnt have more than 1 unique returnVal for same function call anywhere in the network) such as a "spend" call to limit compute resources nondeterministicly and recursively or a "solve" call where (solve x) -> y where (y x)->λ for any y that solves it (though that will often not find solutions, so you'll probably want to use it inside a spend call to limit how long it will look and how much memory it might use while looking etc.
+
+"add 3 doubles" is (typeval "text/plain" bytes_of_the_string_add_3_doubles), except first param of typeval can be just the bits without having to wrap it in a typeval.
+
+115.3 is (typeval "double" those_64_bits), compared to if you just want those_64_bits for efficiency it would be displayed some other way and without implying its a double.
+
+//TODO some prefix that means clean vs dirty? Which should be the one that doesnt need a prefix?
+
+------
+
 TODO rewrite confusing text below...
 
 Dovetailing is needed cuz (L x (R x)) equals x, forall x, and L and R are its childs in the binary forest of call pairs which is how all possible functions are made. Somewhere inside that is a bloom-filter, which is one of the ways of using the axiomOp (Op.ax), which accumulates true statements (and statements which can contradict them, but shouldnt ever generate contradictions (then have to fix them) if everyone follows the protocol), so cant let the lambdas just generate any statements they want in axiomOp, only true statements. But for every statement, you can call (L statement) to get its left child (a function), and call (R statement) to get its right child (a function), and can call any 2 functions on eachother to create (a or find an existing) function. If you take such a true statement twoPlusTwoEqualsFour then (L twoPlusTwoEqualsFour (R twoPlusTwoEqualsFour)) equals twoPlusTwoEqualsFour. Or similarly (L L (R L)) equals L. But what if you try to create a false statement by taking 2 things that dont seem to fit together? Dovetailing is a way to loop through all possible true statements which can be proven in any finite time and memory. An example of a statement which may take infinite time and memory to prove is does P equal NP or not. An example of a statement that takes finite time and memory to prove is what would the weather do next week based on its current movements and a given lambda based model of physics, or is this or that a picture of a cat, or whats the 1 trillionth prime number, or basically anything any computer can do in practice but only including parts of the deep abstractions that mathematicians get into. Wikibinator will actually do dovetailing, but it can only do a small amount of it cuz its like a chess game tree of the space of all possibilities, of lambda functions. The more important use of dovetailing in this case is to define, in abstract math at least, what calculation to do when there are many possible ways to generate the same true statement and you dont know which one the VM is optimized to nondeterministicly use, so that can be used as an id in the system for (eventually automatic but for now manual) formal-verification purposes to create a Compiled.java instance to look in the VM's hashtables for does it have the relevant objects needed to do the next debugStepInto (calculate recursively into detail) or debugStepOver (needs a cache of [func param return] for a given [func param] call, which many of those accumulate and get uncached in order of least recently used) or other proof based data structures where theres many possible ways to prove new true statements using combos of existing true statements (such as (paintMustacheOn picOfCat)->aPicOfACatWithAMustache) would be a [func param return] cache, similar to (paintMustacheOn 42)->someConstantMeaningItDoesntKnowWhatToDo is a [func param return] cache, and is a statement in axiomOp. So if you call (L aPicOfACatWithAMustache (R aPicOfACatWithAMustache)) it equals aPicOfACatWithAMustache, nomatter what kind of thing the aPicOfACatWithAMustache is, but if you try to fake the creation of true statements from other true statements, the dovetail proof wont be able to match the Compiled.java instance to it so would have to actually do the dovetailing or whatever lesser optimizations it can come up with, and would one way or another do the exact calculation that the universal function says to, normally by looking in VM's hashtables for the relevant other true statements or more often just simple halted lambdas derived from combos of other halted lambdas.
