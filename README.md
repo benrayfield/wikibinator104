@@ -44,7 +44,7 @@ If you want a linkedlist you have to write the λ like in <w x y z λ>.
 
 (ax  115.3 (*[λ "add 3 doubles" {...func body...} ,,λ] 5 10) 100.3) //means ret<-(func param) is true.
 
-//(wiki x) is defined only by the statements made by ax such as (ax "world" (wiki "hello"))
+//(wiki x) is defined only by the statements made by ax such as (ax "world" wiki "hello")
 causes "world"<-(wiki "hello") to be true, but in theory it can also pattern match or have
 things built into some of the VMs based on belief in those patterns (will be tested automatically
 in realtime, that it doesnt have more than 1 unique returnVal for same function call anywhere in
