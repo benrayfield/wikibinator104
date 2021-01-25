@@ -39,7 +39,8 @@ If you want a linkedlist you have to write the λ like in <w x y z λ>.
 (r (r (r +ddd))) -> ,λ
 (l (r (r +ddd))) -> t
 (l (r +ddd)) -> [λ "add 3 doubles" {...func body...}]
-(l +ddd (r +ddd)) -> +ddd //(l x (r x)) -> x forall x, if x is clean, else you have to use L and R which handle clean and dirty.
+(l +ddd (r +ddd)) -> +ddd //(l x (r x)) -> x forall x,
+	if x is clean, else you have to use L and R which handle clean and dirty.
 
 (ax  115.3 (*[λ "add 3 doubles" {...func body...} ,,λ] 5 10) 100.3) //means ret<-(func param) is true.
 
