@@ -70,6 +70,12 @@ of typeval can be just the bits without having to wrap it in a typeval.
 efficiency it would be displayed some other way and without implying its a double.
 
 //TODO some prefix that means clean vs dirty? Which should be the one that doesnt need a prefix?
+//Maybe ?x means dirty x and /x means clean x
+//and x by itself means whatever clean vs dirty its written inside
+//such as ?[/+ddd (b c) /(y z) /200] is dirty but contains whatever clean /(y z) returns
+//and clean /200 and clean /+ddd and whatever the ?(b c) dirty call returns.
+//Inside a clean call, its either halted and clean or not halted
+//and may have dirty things to truncate to clean before using them.
 ```
 
 ------
