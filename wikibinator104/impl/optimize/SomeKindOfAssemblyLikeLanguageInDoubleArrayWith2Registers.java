@@ -93,27 +93,42 @@ public strictfp class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers 
 		return ret;
 	}
 	
+	public static void addToSp(int add, double[] mem){
+		mem[SP] = ptr(mem[SP]+add,mem);
+	}
+	
+	public static double peek(double[] mem){
+		return mem[ptr(mem[SP],mem)];
+	}
+	
 	public static void nextIp(double[] mem){
 		mem[IP] = ptr(mem[IP]+1,mem); //have to mask it so it doesnt overflow eventually, even though its masked on every read
 	}
 	
+	private static byte op = 0;
 	public static final byte
-		memMask = 'm',
-		memSize = 'M',
-		mul = '*',
-		neg = '-',
-		add = '+',
-		intAnd = '&',
-		intOr = '|',
-		intXor = '^',
-		intNot = '~',
-		intNand = 'n',
-		intNor = 'N',
-		intMinorityOf3 = '3', //like nand and nor, this is an NP op
-		intShift = 'TODO choose a symbol for shift, and does it need upshift and downshift op or 1 op for all of it, and should it have a rotate op vs just do it with shifts ands and ors etc',
-		write = 'w',
-		read = 'r',
-		jump = 'j';
+		noop = op++, //'_',
+		getIp = op++, //'i',
+		getSp = op++, //'s',
+		doMask = op++, //'m',
+		memMask = op++, //'M',
+		memSize = op++, //'Z',
+		mul = op++, //'*',
+		neg = op++, //'-',
+		add = op++, //'+',
+		intAnd = op++, //'&',
+		intOr = op++, //'|',
+		intXor = op++, //'^',
+		intNot = op++, //'~',
+		intNand = op++, //'n',
+		intNor = op++, //'N',
+		intMinorityOf3 = op++, //'3', //like nand and nor, this is an NP op
+		intShift = op++, //'TODO choose a symbol for shift, and does it need upshift and downshift op or 1 op for all of it, and should it have a rotate op vs just do it with shifts ands and ors etc',
+		write = op++, //'w',
+		read = op++, //'r',
+		dup = op++,
+		isNonzero = op++,
+		jump = op++; //'j';
 	
 	/** a little slower than step(double[]) which doesnt check isHalted(double[]) */
 	public static void stepIfNotHalted(double[] mem){
@@ -127,11 +142,28 @@ public strictfp class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers 
 	public static void step(double[] mem){
 		double opcode = opcode(mem);
 		if(opcode <= 0){
-			//If opcode is nonpositive then push it as literal on stack. If want to push a negative literal,
+			//If opcode is nonpositive then push (neg)it as literal on stack. If want to push the opposite literal,
 			//do that then use NEG opcode, so 2 opcodes.
-			push(opcode, mem);
+			push(-opcode, mem);
+			nextIp(mem);
 		}else{
-			switch((byte)opcode){
+			byte opcodeByte = (byte)opcode;
+			switch(opcodeByte){
+			case noop:
+				nextIp(mem);
+			break;
+			case getIp:
+				push(ip(mem),mem);
+				nextIp(mem);
+			break;
+			case getSp:
+				push(sp(mem),mem);
+				nextIp(mem);
+			break;
+			case doMask:
+				push(ptr(pop(mem),mem),mem);
+				nextIp(mem);
+			break;
 			case memMask:
 				push(mem.length-1,mem);
 				nextIp(mem);
@@ -191,17 +223,46 @@ public strictfp class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers 
 				push(get(pop(mem),mem),mem); //FIXME order of these ops?
 				nextIp(mem);
 			break;
+			case isNonzero:
+				push(pop(mem)==0?0:1,mem);
+				nextIp(mem);
+			break;
+			case pop:
+				addToSp(-1,mem);
+				nextIp(mem);
+			break;
+			case dup:
+				push(peek(mem),mem);
+				nextIp(mem);
+			break;
+			case isNonzero:
+				push(pop(mem)==0?0:1,mem);
+				nextIp(mem);
+			break;
 			case jump:
 				jump(pop(mem),mem);
 			break;
+			TODO a copy range op that calls System.arraycopy? What about the bigo1 per step?
+				Maybe step should return the cost of the step and never let it get more than some small limit such max size 256 copied?
+			default:
+				//opcodeByte > 0.
+				//The range 64..95 does TODO...
+				//The range 96..127 does TODO...
+				//or should it be 4 ranges of 16 each?
+					copy to/from "local var" at mem[0..15]?
+					and mem[sp(mem)-16..sp(mem)-1]?
+					and swap vs copy?
+				if()
+				TODO around 32 local memory slots to read and write into from stack andOr to copy andOr swap between
+				the top n parts of stack (all masked so all ops are valid for all possible double[] mem states)
+			
 			TODO other basic math ops etc.
-			TODO around 32 local memory slots to read and write into from stack andOr to copy andOr swap between
-			the top n parts of stack (all masked so all ops are valid for all possible double[] mem states)
 			TODO a form of this that works with undomem and concat of cbts during it
 			andOr just a form of it that runs n steps, or runs until a certain index contains value 0 (halt condition),
 			then do concat and subrange as cbts then do more of this on such concats/subranges etc,
 			and use that to build some simple graphics and game demos, proofOfconcepts that
 			the lambdas can be optimized, even though there are far better optimizations to do later.
+			TODO 4 or 6 1-byte ops per double, and the others can be noops if dont want to use like if one is a jump?
 			}
 		}
 	}
@@ -231,3 +292,4 @@ public strictfp class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers 
 	}
 
 }
+

@@ -526,9 +526,11 @@ public strictfp class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers 
 	public static void step(double[] mem){
 		double opcode = opcode(mem);
 		if(opcode <= 0){
-			//If opcode is nonpositive then push it as literal on stack. If want to push a negative literal,
+			//If opcode is nonpositive then push (neg)it as literal on stack. If want to push the opposite literal,
 			//do that then use NEG opcode, so 2 opcodes.
-			push(opcode, mem);
+			push(-opcode, mem); //push positive
+			//TODO should opcodes be neg and this be positive? I expect to push positives more often.
+			//TODO should int ops have a signed and unsigned version?
 		}else{
 			switch((byte)opcode){
 			case memMask:
@@ -594,7 +596,8 @@ public strictfp class SomeKindOfAssemblyLikeLanguageInDoubleArrayWith2Registers 
 				jump(pop(mem),mem);
 			break;
 			TODO other basic math ops etc.
-			TODO around 32 local memory slots to read and write into from stack andOr to copy andOr swap between
+			TODO ops (in range 1..127) for around 32 local memory slots to read and write into
+				from stack andOr to copy andOr swap between
 			the top n parts of stack (all masked so all ops are valid for all possible double[] mem states)
 			TODO a form of this that works with undomem and concat of cbts during it
 			andOr just a form of it that runs n steps, or runs until a certain index contains value 0 (halt condition),
