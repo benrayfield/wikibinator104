@@ -32,15 +32,24 @@ If you want a linkedlist you have to write the λ like in <w x y z λ>.
 *x means (curry x), such as in (*[λ "add 3 doubles" {...func body...} ,,λ] 5 10 100.3) -> 115.3
 
 (ax  115.3 (*[λ "add 3 doubles" {...func body...} ,,λ] 5 10) 100.3) //means ret<-(func param) is true.
-```
 
-//(wiki x) is defined only by the statements made by ax such as (ax "world" (wiki "hello")) causes "world"<-(wiki "hello") to be true, but in theory it can also pattern match or have things built into some of the VMs based on belief in those patterns (will be tested automatically in realtime, that it doesnt have more than 1 unique returnVal for same function call anywhere in the network) such as a "spend" call to limit compute resources nondeterministicly and recursively or a "solve" call where (solve x) -> y where (y x)->λ for any y that solves it (though that will often not find solutions, so you'll probably want to use it inside a spend call to limit how long it will look and how much memory it might use while looking etc.
+//(wiki x) is defined only by the statements made by ax such as (ax "world" (wiki "hello"))
+causes "world"<-(wiki "hello") to be true, but in theory it can also pattern match or have
+things built into some of the VMs based on belief in those patterns (will be tested automatically
+in realtime, that it doesnt have more than 1 unique returnVal for same function call anywhere in
+the network) such as a "spend" call to limit compute resources nondeterministicly and recursively
+or a "solve" call where (solve x) -> y where (y x)->λ for any y that solves it (though that will
+often not find solutions, so you'll probably want to use it inside a spend call to limit how
+long it will look and how much memory it might use while looking etc.
 
-"add 3 doubles" is (typeval "text/plain" bytes_of_the_string_add_3_doubles), except first param of typeval can be just the bits without having to wrap it in a typeval.
+"add 3 doubles" is (typeval "text/plain" bytes_of_the_string_add_3_doubles), except first param
+of typeval can be just the bits without having to wrap it in a typeval.
 
-115.3 is (typeval "double" those_64_bits), compared to if you just want those_64_bits for efficiency it would be displayed some other way and without implying its a double.
+115.3 is (typeval "double" those_64_bits), compared to if you just want those_64_bits for
+efficiency it would be displayed some other way and without implying its a double.
 
 //TODO some prefix that means clean vs dirty? Which should be the one that doesnt need a prefix?
+```
 
 ------
 
