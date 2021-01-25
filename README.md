@@ -5,6 +5,7 @@ For ages 0 to expert. It will teach you how itself and every known kind of math 
 
 Later it will create its own graphics per pixel (around 60 times per second) and sounds per wave amplitude (around 20000 times per second), with drag-and-drop function onto function to find/create function, and other intuitive ways of using it. Here's how it might look when used as a programming language...
 
+```
 λ //is the universal function, also often named u or leaf or Λ. In java λ.java is the main object type.
 
 //pair, typeval, l, r, t, f, i, isleaf, curry, wiki, ax are functions you can make with λ.
@@ -23,13 +24,15 @@ Later it will create its own graphics per pixel (around 60 times per second) and
 
 <x y> //is (pair x y), but [x y] is how its normally displayed if theres only 2.
 
-<w x y z> is [w <x y z>] is [w [x [y z]]]. If you want a linkedlist you have to write the λ like in <w x y z λ>.
+<w x y z> is [w <x y z>] is [w [x [y z]]].
+If you want a linkedlist you have to write the λ like in <w x y z λ>.
 
 ,x means (t x). ,,,x means (t (t (t x))).
 
 *x means (curry x), such as in (*[λ "add 3 doubles" {...func body...} ,,λ] 5 10 100.3) -> 115.3
 
 (ax  115.3 (*[λ "add 3 doubles" {...func body...} ,,λ] 5 10) 100.3) //means ret<-(func param) is true.
+```
 
 //(wiki x) is defined only by the statements made by ax such as (ax "world" (wiki "hello")) causes "world"<-(wiki "hello") to be true, but in theory it can also pattern match or have things built into some of the VMs based on belief in those patterns (will be tested automatically in realtime, that it doesnt have more than 1 unique returnVal for same function call anywhere in the network) such as a "spend" call to limit compute resources nondeterministicly and recursively or a "solve" call where (solve x) -> y where (y x)->λ for any y that solves it (though that will often not find solutions, so you'll probably want to use it inside a spend call to limit how long it will look and how much memory it might use while looking etc.
 
