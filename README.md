@@ -41,6 +41,12 @@ If you want a linkedlist you have to write the λ like in <w x y z λ>.
 (l (r +ddd)) -> [λ "add 3 doubles" {...func body...}]
 (l +ddd (r +ddd)) -> +ddd //(l x (r x)) -> x forall x,
 	if x is clean, else you have to use L and R which handle clean and dirty.
+	
+There is no built in double or string math. Everything has to be derived
+from the universal function called on itself in various combos,
+such as emulating the bits of IEEE754 double multiply math and utf8/unicode,
+then optimizing it in an Evaler.java (to use double hardware ops or LWJGL OpenCL GPU (in lazycl))
+which is where compiled functions of (long maxSpend, function func, function param)->function go.
 
 (ax  115.3 (*[λ "add 3 doubles" {...func body...} ,,λ] 5 10) 100.3) //means ret<-(func param) is true.
 
