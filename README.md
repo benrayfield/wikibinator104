@@ -16,7 +16,7 @@ Later it will create its own graphics per pixel (around 60 times per second) and
 
 {x y} //is (s x y)
 
-{x y z} //is {s {x y} z}
+{x y z} //is (s {x y} z)
 
 [x y] //is (pair x y)
 
