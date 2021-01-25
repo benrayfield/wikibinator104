@@ -59,9 +59,9 @@ causes "world"<-(wiki "hello") to be true, but in theory it can also pattern mat
 things built into some of the VMs based on belief in those patterns (will be tested automatically
 in realtime, that it doesnt have more than 1 unique returnVal for same function call anywhere in
 the network) such as a "spend" call to limit compute resources nondeterministicly and recursively
-or a "solve" call where (solve x) -> y where (y x)->λ for any y that solves it (though that will
-often not find solutions, so you'll probably want to use it inside a spend call to limit how
-long it will look and how much memory it might use while looking etc.
+or a "solve" call where (solve x) -> y where (x y)->λ for any y thats a solution of x
+(though that will often not find solutions, so you'll probably want to use it inside a spend call
+to limit how long it will look and how much memory it might use while looking etc.
 
 "add 3 doubles" is (typeval "text/plain" bytes_of_the_string_add_3_doubles), except first param
 of typeval can be just the bits without having to wrap it in a typeval.
