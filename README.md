@@ -39,6 +39,7 @@ If you want a linkedlist you have to write the λ like in <w x y z λ>.
 (l +ddd) -> curry
 (r +ddd) -> [λ "add 3 doubles" {...func body...} ,,λ]
 (r (r +ddd)) -> ,,λ
+//FIXME some of these skipped the (pair x) in (pair x y), so you could use car and cdr.
 (r (r (r +ddd))) -> ,λ
 (l (r (r +ddd))) -> t
 (l (r +ddd)) -> [λ "add 3 doubles" {...func body...}]
