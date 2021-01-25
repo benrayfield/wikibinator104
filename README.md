@@ -76,6 +76,19 @@ efficiency it would be displayed some other way and without implying its a doubl
 //and clean /200 and clean /+ddd and whatever the ?(b c) dirty call returns.
 //Inside a clean call, its either halted and clean or not halted
 //and may have dirty things to truncate to clean before using them.
+//λ takes 7 params. ax evals at 6 (verifies constraint) and 7 params, everything else just at 7.
+//Clean calls start with (λ λ). Dirty calls start with (λ anything_except_λ) such as (λ (λ λ)).
+//Theres 6 params after that,
+//which choose between pair, typeval, l, r, t, f, i, isleaf, curry, wiki, ax etc,
+//then the params of those opcodes, so the prefix and opcode params always sum to 7 params
+//when its time to eval (or 6 params for ax to verify constraint), and less params is waiting.
+//For example, s takes 3 params, and i takes 1 param, and (s i i) calls a param on itself,
+//and (s i i) is waiting on 1 param, and (s i i wiki) -> (wiki wiki),
+//and (s i i (s i i)) -> (s i i (s i i)) which is an infinite loop,
+//but if you call some lazy form of (s i i (s i i)) inside a spend call it will
+//limit the amount of compute resources (time, memory, num of compiles, network, etc)
+//before giving up on (s i i (s i i)) or may know its not going to end within that limit
+//so not even spend the compute resources on it as soon as it knows it cant do the requested work.
 ```
 
 ------
