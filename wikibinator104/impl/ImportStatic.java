@@ -18,6 +18,14 @@ public class ImportStatic{
 	
 	/** call pair */
 	public static λ cp(λ func, λ param){
+		
+		//FIXME check for Pairnode and Curnode so dedup works with their lazyEval and use of g(int) funcs,
+		//but maybe do it in a more general way using an int
+		//as a way to say which parts (1 2 4 8 16) are lazyEvaled (but inside them is not, skipping parts), etc,
+		//though there might be deeper than that in treemap optimizations (it might have 4-7 params?) so need long?
+		//
+		//Use λ.isSkip(int binheapIndex) for that? Thats what its designed for, but I'm unsure if its an efficient way.
+		
 		//FIXME use hashtable for instant partial dedup (and ids for lazy perfect dedup)
 		return new Simpleλ(func, param);
 	}
@@ -162,6 +170,25 @@ public class ImportStatic{
 	public static final λ Dirtyonenorm = null; //FIXME not null
 	
 	public static final λ callParamOnItself = cp(cp(s,i),i);
+	
+	/** Called from Op.curry to get funcbody to call on [...linkedlist...] containing that funcbody and its params.
+	The last (displayed on left, as its the [] kind of linkedlist, not <> kind) is comment (which is λ by default).
+	From PairnodeWithFuncCache QUOTE
+	TODO create an Evaler instance that looks for secondLast cache,
+	and ImportStatic.secondLast.setCompiled(Evaler),
+	and maybe create secondLast func in λ so dont have to cast that, and cuz its a calculation implied by Op.curry,
+	BUT also consider that all ops must finish in bigo1 other than if they're implemented in java stack etc
+	then they must create a lambda and call it instead of recursing on java stack OTHER THAN
+	they are allowed to recurse into Evaler.eval(long,λ,λ) (aka λ.e(long,λ) but anything else has to be bigo1,
+	so based on that, λ should NOT have a secondLast func but could still have a secondLastCacheElseNull func
+	that doesnt recurse and just returns it if it knows it already.
+	UNQUOTE.
+	...
+	Also do that for Secondlast aka secondlast.dirty() so call setCompiled on that too but
+	a different func that does the dirty form of it.
+	*/
+	public static final λ secondlast = null;
+	public static final λ Secondlast = null; //FIXME should be secondlast.dirty(), and read comment in that about setCompiled here
 	
 	public static λ t(λ x){ return cp(t,x); }
 	
