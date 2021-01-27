@@ -1,4 +1,7 @@
 # wikibinator104
+
+Newer version will be in https://github.com/benrayfield/wikibinator105 which is "A redesign of wikibinator104 to directly allow vararg, instead of putting it in linkedlists, for efficiency. This is a big change to the universal function so is its own project. TODO copy parts from wikibinator104's readme etc. See Op.java"
+
 Scalable gaming-low-lag p2p wiki of 1 editable universal function, thats a universal lambda and pattern calculus function of 7 params, with vararg, GPU optimizable, turing-complete-challenge-response, godel-quality-self-reference (wiki can call itself recursively, emulate itself, etc), safely sandboxed across millions of untrusted computers. (TODO)
 
 For ages 0 to expert. It will teach you how itself and every known kind of math works and to build fun games and useful tools and play and work together, from the basics of math counting on your fingers up to the most advanced AI and number crunching and scaleable systems deployed in realtime, and for millions of people to be able to do that together in p2p without anyone being above or below anyone else, just merges and forks in binary forest of immutable objects viewed any way you like as functions can be built to view functions in new ways. (TODO).
